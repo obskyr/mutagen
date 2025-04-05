@@ -209,10 +209,17 @@ class ID3Tags(DictProxy, Tags):
                 # can influence, say, what image is chosen as cover image
                 # in many players.
                 secondary_key = i
+                frame_key = frame.HashKey
+            elif frame.FrameID == "CHAP":
+                # Chapters are ordered by their `start_time`, as this is
+                # also significant in many players.
+                secondary_key = frame.start_time
+                frame_key = frame.FrameID
             else:
                 secondary_key = len(data)
-            
-            return (get_prio(frame), secondary_key, frame.HashKey)
+                frame_key = frame.HashKey
+
+            return (get_prio(frame), secondary_key, frame_key)
 
         framedata = [
             d for (i, (f, d)) in sorted(enumerate(framedata), key=sort_key)]
